@@ -5,21 +5,21 @@ import random
 import threading
 
 class ServerGUI:
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, top):
+        self.master = top
         self.master.title("Server")
         self.master.configure(bg="lightblue")  # Set background color of the window
 
-        self.label = tk.Label(master, text="Enter words (separated by commas)", bg="lightblue", fg="black")
+        self.label = tk.Label(top, text="Enter words (separated by commas)", bg="lightblue", fg="black")
         self.label.pack()
 
-        self.label_message = tk.Label(master, text="You Must Enter Capital Words :)", bg="lightblue", fg="black")
+        self.label_message = tk.Label(top, text="You Must Enter Capital Words :)", bg="lightblue", fg="black")
         self.label_message.pack()
 
-        self.words_entry = tk.Entry(master, width=50, bg="white", fg="black")
+        self.words_entry = tk.Entry(top, width=50, bg="white", fg="black")
         self.words_entry.pack()
 
-        self.start_button = tk.Button(master, text="Start Server", command=self.start_server, bg="lightgray", fg="black")
+        self.start_button = tk.Button(top, text="Start Server", command=self.start_server, bg="lightgray", fg="black")
         self.start_button.pack()
 
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,6 +31,11 @@ class ServerGUI:
         words = self.words_entry.get().split(',')
         if not words[0]:  # Check if no words are entered
             messagebox.showerror("Error", "You must enter at least one word.")
+            return
+
+        # Check if all words are capitalized
+        if not all(word.strip().isupper() for word in words):
+            messagebox.showerror("Error", "Enter Capital Words Only")
             return
 
         self.server_socket.bind((self.HOST, self.PORT))
